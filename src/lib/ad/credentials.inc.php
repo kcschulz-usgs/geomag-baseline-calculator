@@ -1,0 +1,5 @@
+<?php
+
+	$CONFIG = $GLOBALS['CONFIG'];
+	$username = $CONFIG['AD_DEFAULT_USERNAME'];
+	$password = $CONFIG['AD_DEFAULT_PASSWORD'];
