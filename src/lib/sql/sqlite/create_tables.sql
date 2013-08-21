@@ -137,6 +137,7 @@ CONSTRAINT user_uniq UNIQUE (username) ON CONFLICT ABORT,
 FOREIGN KEY(default_observatory_id) REFERENCES observatory(id)
 );
 
+<<<<<<< HEAD
 
 DROP TABLE IF EXISTS [role];
 CREATE TABLE [role] (
@@ -154,6 +155,35 @@ CREATE TABLE [user_role] (
 CONSTRAINT user_role_uniq UNIQUE (user_id, role_id) ON CONFLICT ABORT,
 FOREIGN KEY(user_id) REFERENCES user(id)
 FOREIGN KEY(role_id) REFERENCES role(id)
+);
+
+PRAGMA foreign_keys = ON;
+
+DROP TABLE IF EXISTS user;
+CREATE TABLE user (
+	id integer primary key autoincrement,
+	name VARCHAR(255) not null,
+	username VARCHAR(255) not null UNIQUE,
+	email VARCHAR(255) null,
+	password VARCHAR(255) null,
+	last_Login integer null
+);
+
+CREATE INDEX user_index_email ON user (email);
+
+DROP TABLE IF EXISTS role;
+CREATE TABLE role (
+	id integer primary key autoincrement,
+	name VARCHAR(255) not null,
+	description VARCHAR(255) null
+);
+
+DROP TABLE IF EXISTS user_role;
+CREATE TABLE user_role (
+	id integer primary key autoincrement,
+	user_id integer not null REFERENCES user(id),
+	role_id integer not null REFERENCES role(id),
+	UNIQUE (user_id, role_id)
 );
 
 PRAGMA foreign_keys = ON;
