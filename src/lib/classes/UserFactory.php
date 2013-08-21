@@ -1,6 +1,5 @@
 <?php
 
-include_once '../conf/db.inc.php';
 include_once 'User.php';
 
 class UserFactory {
@@ -201,7 +200,7 @@ class UserFactory {
 				return $row['id'];
 			}
 		} catch (PDOException $error) {
-			$this->error = $error.getMessage();
+			$this->error = $error->getMessage();
 			return null;
 		}
 		return null;
@@ -226,7 +225,7 @@ class UserFactory {
 			$s = $this->db->prepare($this::RESET);
 			$s->execute();
 		} catch (PDOException $error) {
-			$this->error = $error.getMessage();
+			$this->error = $error->getMessage();
 			return false;
 		}
 		return true;
