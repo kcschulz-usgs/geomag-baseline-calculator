@@ -37,6 +37,11 @@ function _ad_get_dn($username) {
 	// This might throw an exception. We will allow it to be thrown
 	$connect = _ad_connect();
 
+	if (!$connect) {
+		print "Could not connect to AD authentication.";
+		return;
+	};
+
 	$result_dn = _ad_search($connect, "sAMAccountName=${username}", array('dn'));
 
 	if (count($result_dn) < 1) {
@@ -94,6 +99,7 @@ function _ad_connect($username = false, $password = false) {
 			// Check the error codes
 			$number = ldap_errno($connect);
 			$error  = ldap_error($connect);
+
 			if ($number == 49) {
 				// 49 == Invalid credentials. Don't keep trying.
 				// If we tried three times, the user would immediately get locked

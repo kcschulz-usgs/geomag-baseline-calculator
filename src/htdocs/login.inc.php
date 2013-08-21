@@ -59,8 +59,11 @@ function authenticate($username, $password) {
 
 		if ($email !== null && substr_compare($email, '@usgs.gov', -9, 9) === 0) {
 			try {
-				ad_authenticate($email, $password);
-				return $user;
+				if (ad_authenticate($email, $password)) {
+					return $user;
+				} else {
+					return null;
+				}
 			} catch (Exception $e) {
 				return null;
 			}
