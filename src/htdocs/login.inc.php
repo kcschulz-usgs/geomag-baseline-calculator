@@ -4,6 +4,8 @@ include_once '../conf/config.inc.php';
 include_once '../lib/classes/UserFactory.php';
 include_once '../lib/ad/authentication.inc.php';
 
+global $CONFIG;
+
 // does the session exist?
 if (!isset($_SESSION['userid']) && isset($_POST['enter'])) {
 
@@ -48,7 +50,8 @@ if (!isset($_SESSION['userid']) && isset($_POST['enter'])) {
 	* Return {User} the authenticated User
 */
 function authenticate($username, $password) {
-	$users = new UserFactory($GLOBALS['DB']);
+	global $DB;
+	$users = new UserFactory($DB);
 	$user = $users->read($username);
 
 	// was the user found?

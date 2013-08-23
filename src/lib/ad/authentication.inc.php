@@ -77,15 +77,16 @@ function _ad_get_dn($username) {
  * @throws Exception if the given username and password fail to authenticate.
  */
 function _ad_connect($username = false, $password = false) {
+
+	global $CONFIG;
+
 	if ($username == '' || $password == '') {
 		// Use defaults instead.
-		include 'credentials.inc.php';
+		$username = $CONFIG['AD_DEFAULT_USERNAME'];
+		$password = $CONFIG['AD_DEFAULT_PASSWORD'];
 	}
 
-	$adservers = array(
-		$CONFIG['AD_SERVER_A'],
-		$CONFIG['AD_SERVER_B']
-	);
+	$adservers = str_getcsv($CONFIG['AD_SERVERS']);
 
 	foreach ($adservers as $server) {
 		// This NEVER returns false, even if the server can't be reached.
