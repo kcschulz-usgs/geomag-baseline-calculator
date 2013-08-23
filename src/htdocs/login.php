@@ -11,9 +11,9 @@
 <form action="" method="post" name="implogin" id="login">
 	<input type="hidden" name="enter" value="yes">
 	<label for="input-username">Username:</label>
-	<input id="input-username" type="text" name="username" class="input1">
+	<input id="input-username" type="text" name="username">
 	<label for="input-password">Password:</label>
-	<input id="input-password" type="password" name="password" class="input1">
+	<input id="input-password" type="password" name="password">
 	<input type="submit" name="submit" value="login" id="login-submit">
 </form>
 
