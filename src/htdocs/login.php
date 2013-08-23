@@ -1,5 +1,6 @@
 <?php
 
+	include_once('userInfo.inc.php');
 	include_once('login.inc.php');
 
 	if (isset($LOGIN_ERROR)) {
@@ -13,25 +14,22 @@
 	<input id="input-username" type="text" name="username" class="input1">
 	<label for="input-password">Password:</label>
 	<input id="input-password" type="password" name="password" class="input1">
-	<input type="submit" name="submit" value="login" onclick="return submit_login();">
+	<input type="submit" name="submit" value="login" id="login-submit">
 </form>
 
 <script language="JavaScript" type="text/javascript"><!--
-	function setFocus(){
-	    document.implogin.uname.focus();
-	}
-	
 	function submit_login(){
-	    if (document.implogin.uname.value == "") {
-	        alert('Please provide your username and password');
-	        document.implogin.uname.focus();
-	        return false;
-	    } else if (document.implogin.passwd.value == "") {
-	        alert('Please provide your username and password');
-	        document.implogin.passwd.focus();
-	        return false;
-	    } else {
-	        return true;
-	    }
+		if (document.implogin.uname.value == "") {
+			alert('Please provide your username and password');
+			document.implogin.uname.focus();
+			return false;
+		} else if (document.implogin.passwd.value == "") {
+			alert('Please provide your username and password');
+			document.implogin.passwd.focus();
+			return false;
+		} else {
+			return true;
+		}
 	}
+	document.getElementById('login-submit').onclick = submit_login;
 //--></script>
