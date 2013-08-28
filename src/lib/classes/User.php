@@ -10,10 +10,10 @@ class User {
 
 	public function __construct($name = NULL, $username = NULL, $email = NULL,
 			$password = NULL) {
-		$this->$name = $name;
-		$this->$username = $username;
-		$this->$email = $email;
-		$this->$password = $password;;
+		$this->name = $name;
+		$this->username = $username;
+		$this->email = $email;
+		$this->password = $password;;
 	}
 
 	// Helpers

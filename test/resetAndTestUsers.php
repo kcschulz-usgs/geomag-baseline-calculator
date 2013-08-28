@@ -1,7 +1,7 @@
 <?php
 
-include_once '../conf/config.inc.php';
-include_once '../lib/classes/UserFactory.php';
+include_once '../src/conf/config.inc.php';
+include_once '../src/lib/classes/UserFactory.php';
 
 $users = new UserFactory($DB);
 
@@ -31,10 +31,10 @@ if ($users->create($user)) {
 }
 
 print 'create valid user: ';
-$user->setName('Name');
-$user->setUsername('Username');
-$user->setEmail('Email');
-$user->setPassword('Password');
+$user->name = 'Name';
+$user->username = 'Username';
+$user->email = 'Email';
+$user->password = 'Password';
 if ($users->create($user)) {
 	print SUCCESS;
 } else {
@@ -42,13 +42,13 @@ if ($users->create($user)) {
 }
 
 print 'update user name: ';
-$user->setName('newName');
+$user->name = 'newName';
 $id = $users->getIdByUsername('Username');
 if ($id === null) {
 	die('user id is null');
 }
 if ($users->update($id, $user)) {
-	if ($users->read('Username')->getName() === 'newName') {
+	if ($users->read('Username')->name === 'newName') {
 		print SUCCESS;
 	} else {
 		die('failure with update()... ' . $users->getError());
@@ -59,10 +59,10 @@ if ($users->update($id, $user)) {
 
 print 'fail to create user with duplicate email: ';
 $user2 = new User();
-$user2->setName('Name2');
-$user2->setUsername('Username2');
-$user2->setEmail('Email');
-$user2->setPassword('Password2');
+$user2->name = 'Name2';
+$user2->username = 'Username2';
+$user2->email = 'Email';
+$user2->password = 'Password2';
 if ($users->create($user2)) {
 	die('created user');
 } else {
@@ -70,9 +70,9 @@ if ($users->create($user2)) {
 }
 
 print 'fail to update user with duplicate email: ';
-$user2->setEmail('Email2');
+$user2->email = 'Email2';
 $users->create($user2);
-$user2->setEmail('Email');
+$user2->email = 'Email';
 $id = $users->getIdByUsername('Username2');
 if ($users->update($id, $user2)) {
 	die('updated user');
@@ -91,13 +91,13 @@ if ($users->delete('Username2')) {
 	die('failure with delete()... ' . $users->getError());
 }
 
-$user->setName('Admin Account');
-$user->setUsername('Admin');
-$user->setEmail('admin@usgs.gov');
+$user->name = 'Admin Account';
+$user->username = 'Admin';
+$user->email = 'admin@usgs.gov';
 $users->create($user);
 
-$user->setName('Member Account');
-$user->setUsername('Member');
-$user->setEmail('member@email.com');
-$user->setPassword('password');
+$user->name = 'Member Account';
+$user->username = 'Member';
+$user->email = 'member@email.com';
+$user->password = 'password';
 $users->create($user);

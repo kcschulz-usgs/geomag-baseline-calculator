@@ -34,7 +34,7 @@ class UserFactory {
 		if ($user->validate()) {
 
 			// validate the email is unique, if any is provided
-			$email = $user->getEmail();
+			$email = $user->email;
 			$id = null;
 			if ($email !== null) {
 				$id = $this->getIdByEmail($email);
@@ -45,10 +45,10 @@ class UserFactory {
 				try {
 					$s = $this->db->prepare($this::INSERT);
 					$s->execute(array(
-						'name' => $user->getName(),
-						'username' => $user->getUsername(),
+						'name' => $user->name,
+						'username' => $user->username,
 						'email' => $email,
-						'password' => md5($user->getPassword())
+						'password' => md5($user->password)
 					));
 				} catch (PDOException $error) {
 					$this->error = $error.getMessage();
@@ -115,7 +115,7 @@ class UserFactory {
 		if ($user->validate()) {
 
 			// validate the email is unique, if any is provided
-			$email = $user->getEmail();
+			$email = $user->email;
 			$emailId = null;
 			if ($email !== null) {
 				$emailId = $this->getIdByEmail($email);
@@ -126,10 +126,10 @@ class UserFactory {
 				try {
 					$s = $this->db->prepare($this::UPDATE);
 					$s->execute(array(
-						'name' => $user->getName(),
-						'username' => $user->getUsername(),
+						'name' => $user->name,
+						'username' => $user->username,
 						'email' => $email,
-						'password' => md5($user->getPassword()),
+						'password' => md5($user->password),
 						'id' => $id
 					));
 				} catch (PDOException $error) {
