@@ -21,14 +21,7 @@ if (!isset($_SESSION['userid']) && isset($_POST['enter'])) {
 	// was a user authenticated?
 	if ($user === null) {
 		header('HTTP/1.0 401 Unauthorized');
-		$LOGIN_ERROR = '
-			A portion of your login was incorrect, please try again.
-			If you are unable to login you may: 
-			<ul>
-				<li><a href="#">Reset your password</a></li>
-				<li>Call us at  303.273.8543 or 626.583.7231</li>
-			</ul>
-		';
+		$LOGIN_ERROR = 'A portion of your login was incorrect, please try again.';
 		return;
 	}
 
