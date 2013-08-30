@@ -76,7 +76,8 @@
 
 			// try user saved in database
 			$uPassword = $user->password;
-			if ($uPassword !== null && $uPassword === md5(stripslashes($password))) {
+			if ($uPassword !== null && $uPassword === md5(stripslashes($password)) &&
+					$user->isEnabled()) {
 				return $user;
 			}
 		}

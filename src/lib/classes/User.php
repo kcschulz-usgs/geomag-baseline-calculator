@@ -7,14 +7,16 @@ class User {
 	public $email;
 	public $password;
 	public $lastLogin;
+	public $enabled;
 
 	public function __construct($name = NULL, $username = NULL, $email = NULL,
-			$password = NULL, $lastLogin = NULL) {
+			$password = NULL, $lastLogin = NULL, $enabled = NULL) {
 		$this->name = $name;
 		$this->username = $username;
 		$this->email = $email;
 		$this->password = $password;
 		$this->lastLogin = $lastLogin;
+		$this->enabled = $enabled;
 	}
 
 	// Helpers
@@ -27,12 +29,20 @@ class User {
 		return true;
 	}
 
+	public function isEnabled() {
+		if (strtoupper($this->$enabled) === 'Y') {
+			return true;
+		}
+		return false;
+	}
+
 	public function getJson() {
 		$o = array(
 			'{',
 			'"name": ', $this->name, ', ',
 			'"username": ', $this->username, ', ',
-			'"lastLogin": ', $this->lastLogin,
+			'"lastLogin": ', $this->lastLogin, ', ',
+			'"enabled": ', $this->isEnabled(),
 			'}'
 		);
 		return join($o, '');
