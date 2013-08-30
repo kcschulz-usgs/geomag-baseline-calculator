@@ -31,6 +31,13 @@
 			$_SESSION['userid'] = $user->name;
 			$_SESSION['username'] = $user->username;
 			$_SESSION['useremail'] = $user->email;
+
+			// update last login time
+			$users = new UserFactory($DB);
+			$user = $users->read($_POST['username']);
+			$user->lastLogin = time();
+			$users->update($users->getIdByUsername($_POST['username']), $user);
+
 			header("location: index.php");
 		}
 	}

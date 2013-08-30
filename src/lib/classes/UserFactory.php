@@ -7,7 +7,7 @@ class UserFactory {
 	public $db = null;
 	private $error = null;
 	const INSERT = 'INSERT INTO user (name, username, email, password) VALUES (:name, :username, :email, :password)';
-	const UPDATE = 'UPDATE user SET name=:name, username=:username, email=:email, password=:password where id=:id';
+	const UPDATE = 'UPDATE user SET name=:name, username=:username, email=:email, last_login = :lastLogin where id=:id';
 	const DELETE = 'DELETE FROM user WHERE username=:username';
 	const SELECT = 'SELECT * FROM user';
 	const SELECT_USERNAME = 'SELECT * FROM user where username=:username';
@@ -79,7 +79,7 @@ class UserFactory {
 				$users = array();
 				while ($row = $s->fetch()) {
 					$users.push(new User($row['name'], $row['username'], $row['email'],
-							$row['password']));
+							$row['password'], $row['last_login']));
 				}
 				return $users;
 			} catch (PDOException $error) {
@@ -92,7 +92,7 @@ class UserFactory {
 				$s->execute(array('username' => $username));
 				while ($row = $s->fetch()) {
 					return new User($row['name'], $row['username'], $row['email'],
-							$row['password']);
+							$row['password'], $row['last_login']);
 				}
 			} catch (PDOException $error) {
 				$this->error = $error.getMessage();
@@ -103,7 +103,8 @@ class UserFactory {
 
 	/**
 	 * Udates user based on an id.  The database will enforce a unique username
-	 * but a unique email must be enforced manually.
+	 * but a unique email must be enforced manually.  This will not update the
+	 * password.
 	 *
 	 * @param {String} username
 	 *
@@ -129,11 +130,11 @@ class UserFactory {
 						'name' => $user->name,
 						'username' => $user->username,
 						'email' => $email,
-						'password' => md5($user->password),
+						'lastLogin' => $user->lastLogin,
 						'id' => $id
 					));
 				} catch (PDOException $error) {
-					$this->error = $error.getMessage();
+					$this->error = $error->getMessage();
 					return false;
 				}
 				return true;

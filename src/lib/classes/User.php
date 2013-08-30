@@ -9,11 +9,12 @@ class User {
 	public $lastLogin;
 
 	public function __construct($name = NULL, $username = NULL, $email = NULL,
-			$password = NULL) {
+			$password = NULL, $lastLogin = NULL) {
 		$this->name = $name;
 		$this->username = $username;
 		$this->email = $email;
-		$this->password = $password;;
+		$this->password = $password;
+		$this->lastLogin = $lastLogin;
 	}
 
 	// Helpers
@@ -24,5 +25,16 @@ class User {
 			return false;
 		}
 		return true;
+	}
+
+	public function getJson() {
+		$o = array(
+			'{',
+			'"name": ', $this->name, ', ',
+			'"username": ', $this->username, ', ',
+			'"lastLogin": ', $this->lastLogin,
+			'}'
+		);
+		return join($o, '');
 	}
 }
