@@ -166,7 +166,7 @@ CREATE TABLE user (
 	username VARCHAR(255) not null UNIQUE,
 	email VARCHAR(255) null,
 	password VARCHAR(255) null,
-	last_Login integer null
+	last_login integer null
 );
 
 CREATE INDEX user_index_email ON user (email);
