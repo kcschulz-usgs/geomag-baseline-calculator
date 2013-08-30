@@ -8,6 +8,7 @@ class UserFactory {
 	private $error = null;
 	const INSERT = 'INSERT INTO user (name, username, email, password) VALUES (:name, :username, :email, :password)';
 	const UPDATE = 'UPDATE user SET name=:name, username=:username, email=:email, last_login = :lastLogin where id=:id';
+	const SET_PASSWORD = 'UPDATE user SET password = :password where id=:id';
 	const DELETE = 'DELETE FROM user WHERE username=:username';
 	const SELECT = 'SELECT * FROM user';
 	const SELECT_USERNAME = 'SELECT * FROM user where username=:username';
@@ -104,13 +105,16 @@ class UserFactory {
 	/**
 	 * Udates user based on an id.  The database will enforce a unique username
 	 * but a unique email must be enforced manually.  This will not update the
-	 * password.
+	 * password unless one is provided (prevents double MD5-ing of existing
+	 * password).
 	 *
+	 * @param {int} id
 	 * @param {String} username
+	 * @param {String} password
 	 *
 	 * @return {boolean} successful or not
 	 */
-	public function update($id, $user) {
+	public function update($id, $user, $password = null) {
 
 		// is the provided user valid?
 		if ($user->validate()) {
@@ -137,6 +141,21 @@ class UserFactory {
 					$this->error = $error->getMessage();
 					return false;
 				}
+
+				// new password provided, update the password
+				if ($password !== null) {
+					try {
+						$s = $this->db->prepare($this::SET_PASSWORD);
+						$s->execute(array(
+							'password' => md5($password),
+							'id' => $id
+						));
+					} catch (PDOException $error) {
+						$this->error = $error->getMessage();
+						return false;
+					}
+				}
+
 				return true;
 			}
 			$this->error = 'email is already being used';
