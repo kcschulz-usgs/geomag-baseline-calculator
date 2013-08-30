@@ -30,7 +30,7 @@ class User {
 	}
 
 	public function isEnabled() {
-		if (strtoupper($this->$enabled) === 'Y') {
+		if (strtoupper($this->enabled) === 'Y') {
 			return true;
 		}
 		return false;

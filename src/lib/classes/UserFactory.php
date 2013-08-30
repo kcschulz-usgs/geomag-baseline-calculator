@@ -128,6 +128,10 @@ class UserFactory {
 			}
 
 			// email is either unique, empty or an update... update the user
+			$enabled = $user->enabled;
+			if ($enabled === null) {
+				$enabled = 'Y';
+			}
 			if ($emailId === null || $emailId === $id) {
 				try {
 					$s = $this->db->prepare($this::UPDATE);
@@ -136,7 +140,7 @@ class UserFactory {
 						'username' => $user->username,
 						'email' => $email,
 						'lastLogin' => $user->lastLogin,
-						'enabled' => $user->enabled,
+						'enabled' => $enabled,
 						'id' => $id
 					));
 				} catch (PDOException $error) {
