@@ -203,7 +203,7 @@ class UserFactory {
 			$s = $this->db->prepare($this::SELECT_USERNAME);
 			$s->execute(array('username' => $username));
 			while ($row = $s->fetch()) {
-				return $row['id'];
+				return $row['ID'];
 			}
 		} catch (PDOException $error) {
 			die($e->getMessage());
@@ -223,7 +223,7 @@ class UserFactory {
 			$s = $this->db->prepare($this::SELECT_EMAIL);
 			$s->execute(array('email' => $email));
 			while ($row = $s->fetch()) {
-				return $row['id'];
+				return $row['ID'];
 			}
 		} catch (PDOException $error) {
 			$this->error = $error->getMessage();
