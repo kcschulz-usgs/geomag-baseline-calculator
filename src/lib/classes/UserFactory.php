@@ -15,6 +15,7 @@ class UserFactory {
 	const SELECT_EMAIL = 'SELECT * FROM user where email=:email';
 	const ROLES = 'SELECT name FROM user_role LEFT JOIN role ON role.ID = user_role.role_id WHERE user_id = :id';
 	const ALL_ROLES = 'SELECT * FROM role';
+	const ADD_ROLE = 'INSERT INTO user_role (user_id, role_id) VALUES (:user_id, :role_id)';
 	const RESET = 'DELETE FROM user';
 
 	public function __construct($db = null) {
@@ -55,6 +56,7 @@ class UserFactory {
 						'defaultObservatoryId' => $user->defaultObservatoryId,
 						'enabled' => 'Y'
 					));
+					$this->addRoles($this->db->lastInsertId(), $user->roles);
 				} catch (PDOException $error) {
 					$this->error = $error.getMessage();
 					return false;
@@ -71,7 +73,7 @@ class UserFactory {
 	/**
 	* Returns an array of roles from a user id or all roles if id is null.
 	*
-	* @param {int} user's id
+	* @param {int} id
 	*
 	* @return {Array} roles
 	*/
@@ -84,7 +86,7 @@ class UserFactory {
 				$s = $this->db->prepare($this::ALL_ROLES);
 				$s->execute();
 				while ($row = $s->fetch()) {
-					$roles[$row['ID']] = $row['name'];
+					$roles[$row['name']] = $row['ID'];
 				}
 			} else {
 				$s = $this->db->prepare($this::ROLES);
@@ -98,6 +100,43 @@ class UserFactory {
 			return null;
 		}
 		return $roles;
+	}
+
+	/**
+	* Adds a role to a user.
+	*
+	* @param {int} userId
+	* @param {string} role
+	*/
+	public function addRole($userId, $role) {
+		$roles = $this->getroles();
+		if (array_key_exists($role, $roles)) {
+			$roleId = $roles[$role];
+		} else {
+			$this->error = "Role does not exist";
+			return null;
+		}
+		try {
+			$s = $this->db->prepare($this::ADD_ROLE);
+			$s->execute(array('user_id' => $userId, 'role_id' => $roleId));
+		} catch (PDOException $error) {
+			$this->error = $error->getMessage();
+		}
+	}
+
+	/**
+	* Adds an array of roles to a user.
+	*
+	* @param {int} userId
+	* @param {array<int>} roles
+	*/
+	public function addRoles($userId, $roles) {
+		$length = sizeof($roles);
+		if ($length > 0) {
+			for ($i = 0; $i < $length; $i++) {
+				$this->addRole($userId, $roles[$i]);
+			}
+		}
 	}
 
 	/**
@@ -178,6 +217,7 @@ class UserFactory {
 						'defaultObservatoryId' => $user->defaultObservatoryId,
 						'id' => $id
 					));
+					$this->addRoles($id, $user->roles);
 				} catch (PDOException $error) {
 					$this->error = $error->getMessage();
 					return false;
