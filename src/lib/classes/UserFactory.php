@@ -14,6 +14,7 @@ class UserFactory {
 	const SELECT_USERNAME = 'SELECT * FROM user where username=:username';
 	const SELECT_EMAIL = 'SELECT * FROM user where email=:email';
 	const ROLES = 'SELECT name FROM user_role LEFT JOIN role ON role.ID = user_role.role_id WHERE user_id = :id';
+	const ALL_ROLES = 'SELECT * FROM role';
 	const RESET = 'DELETE FROM user';
 
 	public function __construct($db = null) {
@@ -68,19 +69,30 @@ class UserFactory {
 	}
 
 	/**
-	* Returns an array of roles from a user id.
-	* @param {int} id
+	* Returns an array of roles from a user id or all roles if id is null.
+	*
+	* @param {int} user's id
 	*
 	* @return {Array} roles
 	*/
-	public function getRoles($id) {
+	public function getRoles($id = null) {
 		$roles = array();
 		try {
-			$s = $this->db->prepare($this::ROLES);
-			$s->execute(array('id' => $id));
-			while ($row = $s->fetch()) {
-				array_push($roles, $row['name']);
-			}
+
+			// return all roles if no id is specified
+			if ($id === null) {
+				$s = $this->db->prepare($this::ALL_ROLES);
+				$s->execute();
+				while ($row = $s->fetch()) {
+					$roles[$row['ID']] = $row['name'];
+				}
+			} else {
+				$s = $this->db->prepare($this::ROLES);
+				$s->execute(array('id' => $id));
+				while ($row = $s->fetch()) {
+					array_push($roles, $row['name']);
+				}
+			}	
 		} catch (PDOException $error) {
 			$this->error = $error->getMessage();
 			return null;
@@ -96,10 +108,10 @@ class UserFactory {
 	 * @return {User} user
 	 */
 	public function read($username = null) {
+		try {
 
-		// return all users if no username is specified
-		if ($username === null) {
-			try {
+			// return all users if no username is specified
+			if ($username === null) {
 				$s = $this->db->prepare($this::SELECT);
 				$s->execute();
 				$users = array();
@@ -110,12 +122,7 @@ class UserFactory {
 							$this->getRoles($row['ID'])));
 				}
 				return $users;
-			} catch (PDOException $error) {
-				$this->error = $error.getMessage();
-				return null;
-			}
-		} else {
-			try {
+			} else {
 				$s = $this->db->prepare($this::SELECT_USERNAME);
 				$s->execute(array('username' => $username));
 				while ($row = $s->fetch()) {
@@ -123,10 +130,10 @@ class UserFactory {
 							$row['password'], $row['last_login'], $row['enabled'],
 							$row['default_observatory_id'], $this->getRoles($row['ID']));
 				}
-			} catch (PDOException $error) {
-				$this->error = $error->getMessage();
-				return null;
 			}
+		} catch (PDOException $error) {
+			$this->error = $error->getMessage();
+			return null;
 		}
 	}
 
