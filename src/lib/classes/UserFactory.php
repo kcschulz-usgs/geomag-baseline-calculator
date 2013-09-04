@@ -6,8 +6,8 @@ class UserFactory {
 
 	public $db = null;
 	private $error = null;
-	const INSERT = 'INSERT INTO user (name, username, email, password, enabled) VALUES (:name, :username, :email, :password, :enabled)';
-	const UPDATE = 'UPDATE user SET name=:name, username=:username, email=:email, last_login = :lastLogin, enabled = :enabled where id=:id';
+	const INSERT = 'INSERT INTO user (name, username, email, password, enabled, default_observatory_id) VALUES (:name, :username, :email, :password, :enabled, :defaultObservatoryId)';
+	const UPDATE = 'UPDATE user SET name=:name, username=:username, email=:email, last_login = :lastLogin, enabled = :enabled, default_observatory_id = :defaultObservatoryId where id=:id';
 	const SET_PASSWORD = 'UPDATE user SET password = :password where id=:id';
 	const DELETE = 'DELETE FROM user WHERE username=:username';
 	const SELECT = 'SELECT * FROM user';
@@ -50,6 +50,7 @@ class UserFactory {
 						'username' => $user->username,
 						'email' => $email,
 						'password' => md5($user->password),
+						'defaultObservatoryId' => $user->defaultObservatoryId,
 						'enabled' => 'Y'
 					));
 				} catch (PDOException $error) {
@@ -141,6 +142,7 @@ class UserFactory {
 						'email' => $email,
 						'lastLogin' => $user->lastLogin,
 						'enabled' => $enabled,
+						'defaultObservatoryId' => $user->defaultObservatoryId,
 						'id' => $id
 					));
 				} catch (PDOException $error) {

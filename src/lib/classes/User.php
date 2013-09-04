@@ -8,15 +8,18 @@ class User {
 	public $password;
 	public $lastLogin;
 	public $enabled;
+	public $defaultObservatoryId;
 
 	public function __construct($name = NULL, $username = NULL, $email = NULL,
-			$password = NULL, $lastLogin = NULL, $enabled = NULL) {
+			$password = NULL, $lastLogin = NULL, $enabled = NULL,
+			$defaultObservatoryId = NULL) {
 		$this->name = $name;
 		$this->username = $username;
 		$this->email = $email;
 		$this->password = $password;
 		$this->lastLogin = $lastLogin;
 		$this->enabled = $enabled;
+		$this->defaultObservatoryId = $defaultObservatoryId;
 	}
 
 	// Helpers
@@ -39,10 +42,11 @@ class User {
 	public function getJson() {
 		$o = array(
 			'{',
-			'"name": ', $this->name, ', ',
-			'"username": ', $this->username, ', ',
+			'"name": "', $this->name, '", ',
+			'"username": "', $this->username, '", ',
 			'"lastLogin": ', $this->lastLogin, ', ',
-			'"enabled": ', $this->isEnabled(),
+			'"enabled": ', $this->isEnabled(), ', ',
+			'"defaultObservatoryId": ', $this->defaultObservatoryId,
 			'}'
 		);
 		return join($o, '');
