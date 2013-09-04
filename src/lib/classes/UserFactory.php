@@ -13,6 +13,7 @@ class UserFactory {
 	const SELECT = 'SELECT * FROM user';
 	const SELECT_USERNAME = 'SELECT * FROM user where username=:username';
 	const SELECT_EMAIL = 'SELECT * FROM user where email=:email';
+	const ROLES = 'SELECT name FROM user_role LEFT JOIN role ON role.ID = user_role.role_id WHERE user_id = :id';
 	const RESET = 'DELETE FROM user';
 
 	public function __construct($db = null) {
@@ -67,6 +68,27 @@ class UserFactory {
 	}
 
 	/**
+	* Returns an array of roles from a user id.
+	* @param {int} id
+	*
+	* @return {Array} roles
+	*/
+	public function getRoles($id) {
+		$roles = array();
+		try {
+			$s = $this->db->prepare($this::ROLES);
+			$s->execute(array('id' => $id));
+			while ($row = $s->fetch()) {
+				array_push($roles, $row['name']);
+			}
+		} catch (PDOException $error) {
+			$this->error = $error->getMessage();
+			return null;
+		}
+		return $roles;
+	}
+
+	/**
 	 * Returns an array of Users or a single User based on username.
 	 *
 	 * @param {String} username
@@ -79,10 +101,13 @@ class UserFactory {
 		if ($username === null) {
 			try {
 				$s = $this->db->prepare($this::SELECT);
+				$s->execute();
 				$users = array();
 				while ($row = $s->fetch()) {
-					$users.push(new User($row['name'], $row['username'], $row['email'],
-							$row['password'], $row['last_login'], $row['enabled']));
+					array_push($users, new User($row['name'], $row['username'],
+							$row['email'], $row['password'], $row['last_login'],
+							$row['enabled'], $row['default_observatory_id'],
+							$this->getRoles($row['ID'])));
 				}
 				return $users;
 			} catch (PDOException $error) {
@@ -95,10 +120,11 @@ class UserFactory {
 				$s->execute(array('username' => $username));
 				while ($row = $s->fetch()) {
 					return new User($row['name'], $row['username'], $row['email'],
-							$row['password'], $row['last_login'], $row['enabled']);
+							$row['password'], $row['last_login'], $row['enabled'],
+							$row['default_observatory_id'], $this->getRoles($row['ID']));
 				}
 			} catch (PDOException $error) {
-				$this->error = $error.getMessage();
+				$this->error = $error->getMessage();
 				return null;
 			}
 		}

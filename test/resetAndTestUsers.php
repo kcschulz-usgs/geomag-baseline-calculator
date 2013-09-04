@@ -94,10 +94,12 @@ if ($users->delete('Username2')) {
 $user->name = 'Admin Account';
 $user->username = 'Admin';
 $user->email = 'admin@usgs.gov';
+$user->roles = [1, 2];
 $users->create($user);
 
 $user->name = 'Member Account';
 $user->username = 'Member';
 $user->email = 'member@email.com';
 $user->password = 'password';
+$user->roles = [1];
 $users->create($user);
