@@ -80,6 +80,22 @@ if ($users->update($id, $user2)) {
 	print SUCCESS;
 }
 
+print 'add role to user: ';
+$user2->roles = array('Observer');
+if ($users->update($id, $user2)) {
+	die('updated user - ' . $users->getError());
+} else {
+	print SUCCESS;
+}
+
+print 'change user role: ';
+$user2->roles = array('Reviewer');
+if ($users->update($id, $user2)) {
+	die('updated user - ' . $users->getError());
+} else {
+	print SUCCESS;
+}
+
 print 'delete user: ';
 if ($users->delete('Username2')) {
 	if ($users->getIdByUsername('Username2') === null) {
@@ -91,15 +107,17 @@ if ($users->delete('Username2')) {
 	die('failure with delete()... ' . $users->getError());
 }
 
+$users->delete('Username');
+
 $user->name = 'Admin Account';
 $user->username = 'Admin';
 $user->email = 'admin@usgs.gov';
-$user->roles = ["Observer", "Reviewer"];
+$user->roles = array("Observer", "Reviewer");
 $users->create($user);
 
 $user->name = 'Member Account';
 $user->username = 'Member';
 $user->email = 'member@email.com';
 $user->password = 'password';
-$user->roles = ["Observer"];
+$user->roles = array("Observer");
 $users->create($user);

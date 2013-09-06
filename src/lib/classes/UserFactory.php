@@ -16,6 +16,8 @@ class UserFactory {
 	const ROLES = 'SELECT name FROM user_role LEFT JOIN role ON role.ID = user_role.role_id WHERE user_id = :id';
 	const ALL_ROLES = 'SELECT * FROM role';
 	const ADD_ROLE = 'INSERT INTO user_role (user_id, role_id) VALUES (:user_id, :role_id)';
+	const RESET_ROLES = 'DELETE FROM user_role WHERE user_id=:user_id';
+	const RESET_ALL_ROLES = 'DELETE FROM user_role';
 	const RESET = 'DELETE FROM user';
 
 	public function __construct($db = null) {
@@ -131,6 +133,16 @@ class UserFactory {
 	* @param {array<int>} roles
 	*/
 	public function addRoles($userId, $roles) {
+
+		// first reset their roles
+		try {
+			$s = $this->db->prepare($this::RESET_ROLES);
+			$s->execute(array('user_id' => $userId));
+		} catch (PDOException $error) {
+			$this->error = $error->getMessage();
+		}
+
+		// then add the (potentially new) roles
 		$length = sizeof($roles);
 		if ($length > 0) {
 			for ($i = 0; $i < $length; $i++) {
@@ -257,6 +269,8 @@ class UserFactory {
 		try {
 			$s = $this->db->prepare($this::DELETE);
 			$s->execute(array('username' => $username));
+			$s = $this->db->prepare($this::RESET_ROLES);
+			$s->execute(array('user_id' => $this->getIdByUsername($username)));
 		} catch (PDOException $error) {
 			$this->error = $error.getMessage();
 			return false;
@@ -324,6 +338,8 @@ class UserFactory {
 	public function reset() {
 		try {
 			$s = $this->db->prepare($this::RESET);
+			$s->execute();
+			$s = $this->db->prepare($this::RESET_ALL_ROLES);
 			$s->execute();
 		} catch (PDOException $error) {
 			$this->error = $error->getMessage();
