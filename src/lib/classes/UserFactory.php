@@ -134,17 +134,19 @@ class UserFactory {
 	*/
 	public function addRoles($userId, $roles) {
 
-		// first reset their roles
-		try {
-			$s = $this->db->prepare($this::RESET_ROLES);
-			$s->execute(array('user_id' => $userId));
-		} catch (PDOException $error) {
-			$this->error = $error->getMessage();
-		}
-
-		// then add the (potentially new) roles
+		// are there any roles to add?
 		$length = sizeof($roles);
 		if ($length > 0) {
+
+			// first reset their roles...
+			try {
+				$s = $this->db->prepare($this::RESET_ROLES);
+				$s->execute(array('user_id' => $userId));
+			} catch (PDOException $error) {
+				$this->error = $error->getMessage();
+			}
+
+			// ..then add the (potentially new) roles
 			for ($i = 0; $i < $length; $i++) {
 				$this->addRole($userId, $roles[$i]);
 			}
